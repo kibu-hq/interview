@@ -2,6 +2,7 @@
 import React from 'react';
 import axios from 'axios';
 import Link from 'next/link';
+import { Carousel } from '@/components/ui/carousel';// Adjust the import based on the actual package
 
 interface Member {
   id: string;
@@ -28,15 +29,17 @@ const Home: React.FC = () => {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-4">Members</h1>
-      <ul>
+      <Carousel>
         {members.map((member) => (
-          <li key={member.id} className="border-b border-gray-200 py-2">
-            <Link href={`/members/${member.id}`} className="text-blue-500 hover:underline">
-              {member.firstName} {member.lastName}
-            </Link>
-          </li>
+          <div key={member.id} className="p-4">
+            <div className="border rounded-lg shadow-lg p-4">
+              <Link href={`/members/${member.id}`} className="text-blue-500 hover:underline">
+                <h2 className="text-xl font-bold">{member.firstName} {member.lastName}</h2>
+              </Link>
+            </div>
+          </div>
         ))}
-      </ul>
+      </Carousel>
     </div>
   );
 };
