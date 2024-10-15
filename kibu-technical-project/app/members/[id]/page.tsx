@@ -1,8 +1,10 @@
 'use client';
 
 import React from 'react';
-import { useRouter, useParams } from 'next/navigation'; // Import useParams from next/navigation
+import { useRouter, useParams } from 'next/navigation';
 import axios from 'axios';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import ClipLoader from 'react-spinners/ClipLoader';
 
 interface Note {
   id: string;
@@ -12,8 +14,9 @@ interface Note {
 
 const MemberNotes: React.FC = () => {
   const router = useRouter();
-  const { id } = useParams(); // Use useParams to get the id
+  const { id } = useParams();
   const [notes, setNotes] = React.useState<Note[]>([]);
+  const [loading, setLoading] = React.useState<boolean>(true);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -23,6 +26,8 @@ const MemberNotes: React.FC = () => {
           setNotes(notesResponse.data);
         } catch (error) {
           console.error('Error fetching data:', error);
+        } finally {
+          setLoading(false);
         }
       }
     };
@@ -30,20 +35,30 @@ const MemberNotes: React.FC = () => {
     fetchData();
   }, [id]);
 
-  if (!id) {
-    return <div>Loading...</div>;
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <ClipLoader size={50} />
+      </div>
+    );
   }
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4">Notes for Member {id}</h1>
-      <ul>
-        {notes.map((note) => (
-          <li key={note.id} className="border-b border-gray-200 py-2">
-            {note.text}
-          </li>
-        ))}
-      </ul>
+      <Card>
+        <CardHeader>
+          <CardTitle>Notes for Member {id}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ul>
+            {notes.map((note) => (
+              <li key={note.id} className="border-b border-gray-200 py-2">
+                {note.text}
+              </li>
+            ))}
+          </ul>
+        </CardContent>
+      </Card>
     </div>
   );
 };
